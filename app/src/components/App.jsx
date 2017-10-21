@@ -7,8 +7,8 @@ import RadioOption from './Utilities.jsx';
 import Button from './Button.jsx';
 import Quickview from './Quickview.jsx';
 
-import Register from './Register.jsx';
-import Attendees from './Attendees.jsx';
+import Dashboard from './Dashboard.jsx'
+import Nodes from './Nodes.jsx'
 
 require("./App.scss");
 
@@ -24,40 +24,40 @@ export default class App extends React.Component{
   }
 }
 
-export class RegisterContainer extends React.Component{
+export class DashboardContainer extends React.Component{
   render() {
     return (
-    <TabContainer active="register" />
+    <TabContainer active="dashboard" />
     )
   }
 }
 
-export class AttendeesContainer extends React.Component{
+export class NodesContainer extends React.Component{
   render() {
     return (
-    <TabContainer active="attendees" />
+    <TabContainer active="nodes" />
     )
   }
 }
 
 export class TabContainer extends React.Component{
   render() {
-    let register_is_active = this.props.active == 'register';
-    let attendees_is_active = this.props.active == 'attendees';
+    let dashboard_is_active = this.props.active == 'dashboard';
+    let nodes_is_active = this.props.active == 'nodes';
 
     let container
-    if(register_is_active){
-      container = (<Register />)
+    if(dashboard_is_active){
+      container = (<Dashboard />)
     }
-    if(attendees_is_active){
-      container = (<Attendees />)
+    if(nodes_is_active){
+      container = (<Nodes />)
     }
     return (
       <div>
          <div className="ui main text container">
             <div className="ui two item stackable tabs menu">
-              <Link to='/register' className={"item " + (register_is_active ? 'active':'')}><i className="child icon"></i> Acreditación</Link>
-              <Link to='/attendees' className={"item " + (attendees_is_active ? 'active':'')}><i className="users icon"></i> Asistentes</Link>
+              <Link to='/dashboard' className={"item " + (dashboard_is_active ? 'active':'')}><i className="child icon"></i> Dashboard</Link>
+              <Link to='/nodes' className={"item " + (nodes_is_active ? 'active':'')}><i className="users icon"></i> Nodes</Link>
             </div>
 
             <div className="ui bottom tab container active">

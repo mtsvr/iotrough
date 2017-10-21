@@ -1,18 +1,19 @@
 import React from 'react';
-import { IndexRoute, Router, Route, browserHistory, Redirect } from 'react-router';
-import App, { RegisterContainer, AttendeesContainer } from './App.jsx';
-import InitialConfig from './InitialConfig.jsx';
+import { IndexRoute, Router, Route, hashHistory, Redirect, useRouterHistory } from 'react-router';
+import { createHashHistory } from 'history'
+import App, { DashboardContainer, NodesContainer } from './App.jsx';
+
+const appHistory = useRouterHistory(createHashHistory)({ queryKey: false })
 
 export default class RouterContainer extends React.Component{
   render(){
     return (
-      <Router history={browserHistory}>
-        <Redirect from="/" to="register" />
+      <Router history={appHistory}>
+        <Redirect from="/" to="dashboard" />
         <Route path="/" component={App}>
-          <IndexRoute component={RegisterContainer} />
-          <Route path="init" component={InitialConfig} />
-          <Route path="register" component={RegisterContainer} />
-          <Route path="attendees" component={AttendeesContainer} />
+          <IndexRoute component={DashboardContainer} />
+          <Route path="dashboard" component={DashboardContainer} />
+          <Route path="nodes" component={NodesContainer} />
         </Route>
       </Router>
     );
