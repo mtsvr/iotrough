@@ -23,10 +23,10 @@ require("./App.scss");
 export default class App extends React.Component{
   render() {
       return (
-        <div>
+        <div className="dedatch">
           <Header />
 
-          <div className="ui main text container">
+          <div className="ui main fluid container">
             <div className="ui bottom tab container active">
               { this.props.children }
             </div>
@@ -81,7 +81,8 @@ export class Header extends React.Component{
               <i className="wrench icon"></i>
               <div className="menu">
                 <Link to='/dashboard' className="item "><i className="home icon"></i> Dashboard</Link>
-                <Link to='/nodes' className="item "><i className="microchip icon"></i> Nodes</Link>
+                <Link to='/nodes/1' className="item"><i className="microchip icon"></i> Node 1</Link>
+                <Link to='/nodes/2' className="item"><i className="microchip icon"></i> Node 2</Link>
               </div>
             </div>
           </div>

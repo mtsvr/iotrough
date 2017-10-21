@@ -12,8 +12,8 @@ export default class RouterContainer extends React.Component{
         <Redirect from="/" to="dashboard" />
         <Route path="/" component={App}>
           <IndexRoute component={DashboardContainer} />
-          <Route path="dashboard" component={DashboardContainer} />
-          <Route path="nodes" component={NodesContainer} />
+          <Route path={"/dashboard"} component={DashboardContainer} />
+          <Route path={"/nodes/:nodeId"} component={NodesContainer} />
         </Route>
       </Router>
     );

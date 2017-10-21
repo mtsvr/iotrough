@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactRouter from 'react-router'
 import ReactDOM from 'react-dom';
 
 import axios from "axios";
@@ -13,7 +14,8 @@ export default class Nodes extends React.Component {
     }
 
     componentWillMount(){
-
+        console.log('node props',this.props.match)
+        console.log('node props',this.props.params)
     }
 
     componentDidMount(){

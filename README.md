@@ -1,6 +1,10 @@
-#IOTrough
+# IOTrough
 
-Web App client for the IOTrough system
+Web App client for the IOTrough system.
+
+## TO DO
+
+Add backend that connects with the local database and hosts the front-end
 
 ## Requirements
 
