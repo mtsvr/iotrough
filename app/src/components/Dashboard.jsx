@@ -23,7 +23,36 @@ export default class Dashboard extends React.Component {
     render(){
         return (
             <div>
-                Hola Mamá
+                <div className="ui stackable grid">
+                    <div className="four wide column">
+                        <div className="ui card">
+                            <div className="content">
+                                contenido
+                            </div>
+                        </div>
+                    </div>
+                    <div className="four wide column">
+                        <div className="ui card">
+                            <div className="content">
+                                contenido
+                            </div>
+                        </div>
+                    </div>
+                    <div className="four wide column">
+                        <div className="ui card">
+                            <div className="content">
+                                contenido
+                            </div>
+                        </div>
+                    </div>
+                    <div className="four wide column">
+                        <div className="ui card">
+                            <div className="content">
+                                contenido
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         )
     }

@@ -23,7 +23,18 @@ export default class Nodes extends React.Component {
     render(){
         return (
             <div>
-                Hola Papá
+                <div className="ui two column grid">
+                    <div className="column">
+                        <div className="ui fluid card">
+                            <div className="content">
+                                contenido
+                            </div>
+                        </div>
+                    </div>
+                    <div className="column"></div>
+                    <div className="column"></div>
+                    <div className="column"></div>
+                </div>
             </div>
         )
     }
