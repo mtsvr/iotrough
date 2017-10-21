@@ -24,28 +24,17 @@ export default class Quickview extends React.Component {
     
        
     render() {
-        let event = []
         
         return (
             <div>
-                <a className="ui yellow label">
-                    Evento:
-                    <div className="detail"> { event } </div>
+                <a className="ui teal label">
+                    Mediciones Totales
+                    <div className="detail"> 100 </div>
                 </a>
 
-                <a className="ui yellow label">
-                    Total
-                    <div className="detail"> </div>
-                </a>
-
-                <a className="ui yellow label">
-                    Acreditados
-                    <div className="detail"></div>
-                </a>
-
-                <a className="ui yellow label">
-                    Restantes
-                    <div className="detail"></div>
+                <a className="ui blue label">
+                    Última Medición
+                    <div className="detail"> 12:30 10/10/2017 </div>
                 </a>
             </div>
         );
