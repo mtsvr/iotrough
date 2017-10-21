@@ -5,16 +5,6 @@ import RouterContainer from './components/RouterContainer.jsx';
 //import { loadState, saveState } from './LocalStore';
 import throttle from 'lodash/throttle';
 
-
-store.subscribe(throttle(() => {
-    saveState({
-       conections: store.getState().conections,
-       event: store.getState().event,
-       printer: store.getState().printer
-    });
-}, 2000));
-
-
 main();
 function main() {
     const app = document.createElement('div');
@@ -22,16 +12,12 @@ function main() {
 
     ReactDOM.render(
         
-    <Provider store={store}>
-      <AppContainer><RouterContainer /></AppContainer>
-    </Provider>, app
+      <AppContainer><RouterContainer /></AppContainer>, app
     )
     if (module.hot) {
         module.hot.accept('./components/RouterContainer.jsx', () => {
             ReactDOM.render(
-                <Provider store={store}>
-                    <AppContainer component={require('./components/RouterContainer.jsx').default} />
-                </Provider>,
+                    <AppContainer component={require('./components/RouterContainer.jsx').default} />,
                 app
             );
         });
