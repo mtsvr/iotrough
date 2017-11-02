@@ -16,11 +16,23 @@ import Nodes from './Nodes.jsx'
 
 import $ from 'jquery';
 
+var socket = io();
+window.socket = socket;
+
 var pjson = require('../../../package.json');
 
 require("./App.scss");
 
 export default class App extends React.Component{
+  constructor(){
+    super();
+    socket.on('connect', data => {
+      console.log("conectado a servidor!");
+    });
+    this.state = {
+      
+    }
+  }
   render() {
       return (
         <div className="dedatch">
