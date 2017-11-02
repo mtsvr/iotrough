@@ -1,6 +1,7 @@
 import React from 'react'
 import { render } from 'react-dom'
 import { Link } from 'react-router'
+import io from 'socket.io-client';
 import '../../semantic/dist/semantic.css';
 window.jQuery = $; // Assure it's available globally.
 window.$ = $;
