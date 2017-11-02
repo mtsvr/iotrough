@@ -24,11 +24,4 @@ app.get("*", function (req, res) {
     res.sendFile(path.join(DIST_DIR, "index.html"));
 });
 
-var server = require('http').Server(app),
-io = require('socket.io')(server);
-
-io.on('connection', function(socket){
-    console.log("connection")
-});
-
 module.exports = app
