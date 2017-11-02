@@ -34,6 +34,17 @@ export default class App extends React.Component{
       
     }
   }
+
+  componentWillMount(){
+    
+  }
+
+  componentDidMount(){
+    socket.emit('db_connect');
+    socket.on('db_connection_resolve', data => {
+      console.log('db connection resolve',data)
+    })
+  }
   render() {
       return (
         <div className="dedatch">
