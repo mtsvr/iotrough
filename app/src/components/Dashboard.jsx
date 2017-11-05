@@ -8,16 +8,21 @@ export default class Dashboard extends React.Component {
     constructor(props){
         super(props)
         this.state ={
-
+            nodes:[],
+            last_reads:{}
         }
     }
 
     componentWillMount(){
-
+        
     }
 
     componentDidMount(){
-
+        socket.emit('get_nodes_info');
+        socket.on('nodes_info',data => {
+            console.log('nodes info stuff',data.info.nodes)
+            this.setState({nodes:data.info.nodes})
+        })
     }
 
     render(){

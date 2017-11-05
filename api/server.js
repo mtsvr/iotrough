@@ -88,6 +88,14 @@ io.on('connection', function(socket){
         db_check(function(check){
             if(check){
                 console.log('connected to database');
+
+                var db_changes = global.db.follow({since:"now"});
+                db_changes.on('change',function(change){
+                    console.log('db change ',change);
+                    socket.emit('db_changes',{change:change});
+                })
+                db_changes.follow();
+
                 socket.emit('db_connection_resolve',{connection:true, error: 'none'});
             } else {
                 console.log('no database connection');
@@ -95,6 +103,24 @@ io.on('connection', function(socket){
             }
         })
     })
+
+    socket.on('get_nodes_info',() => {
+        global.db.get('info',{include_docs:true},function(error,result){
+            if(!error){
+                socket.emit('nodes_info',{info:result})
+            }
+        })
+    })
+
+    socket.on('all_reads',function(){
+
+    })
+
+    socket.on('get_node',data => {
+
+    })
+
+
     
 
 });

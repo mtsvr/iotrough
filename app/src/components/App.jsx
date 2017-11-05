@@ -31,7 +31,6 @@ export default class App extends React.Component{
       console.log("conectado a servidor!");
     });
     this.state = {
-      
     }
   }
 
@@ -44,10 +43,12 @@ export default class App extends React.Component{
     socket.on('db_connection_resolve', data => {
       console.log('db connection resolve',data)
     })
+
   }
+
   render() {
       return (
-        <div className="dedatch">
+        <div className="detatch">
           <Header />
 
           <div className="ui main fluid container">

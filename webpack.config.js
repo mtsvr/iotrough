@@ -3,7 +3,7 @@ var webpack = require('webpack');
 var path = require('path');
 var HtmlwebpackPlugin = require('html-webpack-plugin');
 var CompressionPlugin = require('compression-webpack-plugin')
-// var WriteFilePlugin = require('write-file-webpack-plugin');
+var WriteFilePlugin = require('write-file-webpack-plugin');
 
 var ROOT_PATH = path.resolve(__dirname);
 
@@ -47,15 +47,17 @@ module.exports = {
   },
   devServer: {
     contentBase: path.resolve(ROOT_PATH, 'app/build'),
+    outputPath: path.join(ROOT_PATH, 'app/build'),
     historyApiFallback: true,
     inline: true,
+    progress: true,
     host: '0.0.0.0',
     disableHostCheck: true
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
     new HtmlwebpackPlugin({
-      title: 'Sage Station'
+      title: 'IoTrough'
     }),
     new CompressionPlugin({
       asset: "[path].gz[query]",
@@ -78,5 +80,6 @@ module.exports = {
       },
       exclude: [/\.min\.js$/gi] // skip pre-minified libs
     }),
+    
   ]
 };
