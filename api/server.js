@@ -85,6 +85,10 @@ function sortDocByTimestamp(a,b){
     return(b.doc.time-a.doc.time)
 }
 
+function sortDocByTimestampReverse(a,b){
+    return(a.doc.time-b.doc.time)
+}
+
 function getLastNDays(doc_list,n){
 
     let limit = (new Date().getTime()) - n*24*60*60*1000;
@@ -168,8 +172,15 @@ io.on('connection', function(socket){
         })
     });
 
-    socket.on('get_node',data => {
-
+    socket.on('get_node_data',data => {
+        global.db.view('nodes','get_node',{key:data.node_id,include_docs:true},function(error,result){
+            if(!error){
+                let result_docs = getLastNDays(result.rows,data.days).sort(sortDocByTimestampReverse);
+                socket.emit('node_data',{node_id:data.node_id,data:result_docs});
+            } else {
+                socket.emit('node_data',{status:'error',error:error,data:[]})
+            }
+        })
     })
 
     socket.on('get_node_last_read',data => {
