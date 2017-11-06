@@ -81,6 +81,24 @@ function db_check(callback){
 
 }
 
+function sortDocByTimestamp(a,b){
+    return(b.doc.time-a.doc.time)
+}
+
+function getLastNDays(doc_list,n){
+
+    let limit = (new Date().getTime()) - n*24*60*60*1000;
+    //console.log('limit',(new Date(limit).toLocaleString('es-CL')))
+    let docs = [];
+    for(let e of doc_list){
+        if(e.doc.time > limit){
+            docs.push(e);
+        }
+    }
+
+    return docs;
+}
+
 io.on('connection', function(socket){
     console.log("connection")
 
@@ -110,14 +128,61 @@ io.on('connection', function(socket){
                 socket.emit('nodes_info',{info:result})
             }
         })
+    });
+
+    socket.on('get_all_reads',(days) => {
+        global.db.view('nodes','all_docs',{include_docs:true},function(error,result){
+            if(!error){
+                let result_docs = getLastNDays(result.rows,days).sort(sortDocByTimestamp);
+                socket.emit('all_reads',{status:'ok',data:result_docs});
+            } else {
+                socket.emit('all_reads',{status:'error',error:error,data:[]})
+            }
+        })
+    });
+
+    socket.on('get_last_read',() => {
+        global.db.view('nodes','all_docs',{include_docs:true},function(error,result){
+            if(!error){
+                let result_docs = result.rows.sort(sortDocByTimestamp);
+                if(result_docs.length>0){
+                    socket.emit('last_read',{status:'ok',data:{time:result_docs[0].doc.time}});
+                } else {
+                    socket.emit('last_read',{status:'no reads',data:{time:0}});
+                }
+                
+            } else {
+                socket.emit('last_read',{status:'error',error:error,data:{time:0}})
+            }
+        })
     })
 
-    socket.on('all_reads',function(){
-
-    })
+    socket.on('get_read_count',() => {
+        global.db.view('nodes','all_docs',{include_docs:true},function(error,result){
+            if(!error){
+                socket.emit('read_count',{status:'ok',data:{count:result.total_rows}});
+                
+            } else {
+                socket.emit('read_count',{status:'error',error:error,data:{count:0}})
+            }
+        })
+    });
 
     socket.on('get_node',data => {
 
+    })
+
+    socket.on('get_node_last_read',data => {
+        global.db.view('nodes','get_node',{key:data.node_id,include_docs:true},function(error,result){
+            if(!error){
+                if(result.rows.length==1){
+                    socket.emit('node_last_read',{node_id:data.node_id,read:result.rows[0]})
+                } else {
+                    let last_read = result.rows.sort(sortDocByTimestamp);
+                    socket.emit('node_last_read',{node_id:data.node_id,read:last_read[0]})
+                }
+            }
+        })
     })
 
 

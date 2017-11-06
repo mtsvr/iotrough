@@ -31,6 +31,7 @@ export default class App extends React.Component{
       console.log("conectado a servidor!");
     });
     this.state = {
+
     }
   }
 
@@ -42,6 +43,7 @@ export default class App extends React.Component{
     socket.emit('db_connect');
     socket.on('db_connection_resolve', data => {
       console.log('db connection resolve',data)
+
     })
 
   }
@@ -62,27 +64,18 @@ export default class App extends React.Component{
   }
 }
 
-export class DashboardContainer extends React.Component{
-  render() {
-    return (
-      <div>
-        <Dashboard />  
-      </div>
-    )
-  }
-}
-
-export class NodesContainer extends React.Component{
-  render() {
-    return (
-      <div>
-        <Nodes />  
-      </div>
-    )
-  }
-}
-
 export class Header extends React.Component{
+
+  constructor(props){
+    super(props)
+    this.state = {
+      nodes:[]
+    }
+  }
+
+  componentWillMount(){
+    
+  }
 
   componentDidMount(){
     $('#nav')
@@ -90,10 +83,21 @@ export class Header extends React.Component{
         on: 'hover'
       })
     ;
+    socket.emit('get_nodes_info');
+    socket.on('nodes_info',data => {
+      this.setState({nodes:data.info.nodes})
+    })
+
+    socket.on('db_changes',data =>{
+      if(data.change.id=='info'){
+        socket.emit('get_nodes_info');
+      }
+    })
   }
 
   render(){
     const logo = require('../../images/chip.svg');
+
     return (
       <div className="ui fixed menu">
         <div className="ui fluid container">
@@ -106,8 +110,11 @@ export class Header extends React.Component{
               <i className="wrench icon"></i>
               <div className="menu">
                 <Link to='/dashboard' className="item "><i className="home icon"></i> Dashboard</Link>
-                <Link to='/nodes/1' className="item"><i className="microchip icon"></i> Node 1</Link>
-                <Link to='/nodes/2' className="item"><i className="microchip icon"></i> Node 2</Link>
+                {this.state.nodes.map((e,i) => {
+                  return (
+                    <Link key={e.node_id} id={e.node_id} to={'/nodes/'+e.node_id} className="item"><i className="microchip icon"></i> {e.node_name} </Link>
+                  )
+                })}
               </div>
             </div>
           </div>

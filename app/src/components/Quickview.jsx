@@ -18,17 +18,32 @@ export default class Quickview extends React.Component {
 
     componentDidMount() {
 
-        this.getLastReadTime();
-        this.getTotalMeasurements();
+        socket.emit('get_last_read')
+        socket.emit('get_read_count');
+
+        socket.on('last_read',res => {
+            //console.log('last read ',res);
+            this.setState({last_read:res.data.time})
+        })
+
+        socket.on('read_count',res => {
+            //console.log('read count ',res);
+            this.setState({total_reads:res.data.count})
+        })
 
         socket.on('db_changes',data =>{
-            this.getLastReadTime();
-            this.getTotalMeasurements();
-
+            socket.emit('get_last_read')
+            socket.emit('get_read_count');
         })
         
     }
     componentWillReceiveProps(nextProps){
+    }
+
+    componentWillUnount(){
+        socket.off('db_changes');
+        socket.off('last_read');
+        socket.off('read_count');
     }
 
     getLastReadTime(){
