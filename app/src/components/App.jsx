@@ -95,6 +95,11 @@ export class Header extends React.Component{
     })
   }
 
+  componentWillUnmount(){
+    socket.off('db_changes');
+    socket.off('nodes_info');
+  }
+
   render(){
     const logo = require('../../images/chip.svg');
 

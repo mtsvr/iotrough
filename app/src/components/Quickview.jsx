@@ -32,6 +32,7 @@ export default class Quickview extends React.Component {
         })
 
         socket.on('db_changes',data =>{
+
             socket.emit('get_last_read')
             socket.emit('get_read_count');
         })
@@ -40,7 +41,7 @@ export default class Quickview extends React.Component {
     componentWillReceiveProps(nextProps){
     }
 
-    componentWillUnount(){
+    componentWillUnmount(){
         socket.off('db_changes');
         socket.off('last_read');
         socket.off('read_count');
