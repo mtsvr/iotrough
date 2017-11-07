@@ -113,8 +113,16 @@ io.on('connection', function(socket){
 
                 var db_changes = global.db.follow({since:"now"});
                 db_changes.on('change',function(change){
-                    console.log('db change ',change);
-                    socket.emit('db_changes',{change:change});
+                    //console.log('db change ',change.id,change.id.indexOf('measure'));
+                    if(change.id.indexOf('measure')==-1){
+                        socket.emit('db_changes',{change:change});
+                    } else {
+                        global.db.get(change.id, function(error,result){
+                            if(!error){
+                                socket.emit('db_changes',{change:change,node_id:result.node.node_id});
+                            }
+                        })
+                    }
                 })
                 db_changes.follow();
 
@@ -176,6 +184,7 @@ io.on('connection', function(socket){
         global.db.view('nodes','get_node',{key:data.node_id,include_docs:true},function(error,result){
             if(!error){
                 let result_docs = getLastNDays(result.rows,data.days).sort(sortDocByTimestampReverse);
+                //console.log({node_id:data.node_id,data:result_docs})
                 socket.emit('node_data',{node_id:data.node_id,data:result_docs});
             } else {
                 socket.emit('node_data',{status:'error',error:error,data:[]})

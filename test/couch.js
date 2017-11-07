@@ -158,4 +158,4 @@ function data_insert(data){
     }
 }
 
-data_insert("0x04|sph:7|sec:2|tem:12|lvl:0")
+data_insert("0x02|sph:7|sec:2|tem:12|lvl:2")
