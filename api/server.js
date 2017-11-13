@@ -32,7 +32,7 @@ function db_check(callback){
 
                         let view_doc = {
                             all_docs:{
-                                map: function(doc){if(doc._id!='info'){emit(doc._id,{rev:doc._rev})}}
+                                map: function(doc){if(doc._id!='info' || doc._id!='config'){emit(doc._id,{rev:doc._rev})}}
                             },
                             get_node:{
                                 map: function(doc){emit(doc.node.node_id,{rev:doc._rev})}
@@ -43,6 +43,33 @@ function db_check(callback){
                             _id: "info",
                             nodes: []
                         }
+
+                        let config = {
+                            _id: "config",
+                            period : 7,
+                            sensors : {
+                                sph: {
+                                    ideal : 7,
+                                    warning: 0.5,
+                                    alert: 1
+                                },
+                                sec: {
+                                    ideal: 0,
+                                    warning: 10000,
+                                    alert: 14000 
+                                },
+                                tem: {
+                                    ideal: 22,
+                                    warning: 4,
+                                    alert: 5
+                                },
+                                lvl: {
+                                    ideal: 3,
+                                    warning: 2,
+                                    alert: 3
+                                }
+                            } 
+                        }
                         
                         global.db.insert({views:view_doc,language:"javascript"},'_design/nodes',function(error,body){
                             if(!error){
@@ -50,13 +77,25 @@ function db_check(callback){
                                 global.db.insert(doc,function(e,b){
                                     if(!e){
                                         console.log('info document inserted');
-                                        if (callback && typeof callback=='function'){
-                                            callback(true)
-                                        }
+                                        global.db.insert(config,function(_e,_b){
+                                            if(!_e){
+                                                console.log('config document inserted');
+                                                if (callback && typeof callback=='function'){
+                                                    callback(true)
+                                                }
+                                            }
+                                            else {
+                                                console.log('config document nor inserted');
+                                                if (callback && typeof callback=='function'){
+                                                     callback(false)
+                                                }
+                                            }
+                                            return;
+                                        })
                                     } else {
                                         console.log('info doc not inserted');
                                         if (callback && typeof callback=='function'){
-                                            callback(true)
+                                            callback(false)
                                         }
                                     }
                                     return;
@@ -201,6 +240,24 @@ io.on('connection', function(socket){
                     let last_read = result.rows.sort(sortDocByTimestamp);
                     socket.emit('node_last_read',{node_id:data.node_id,read:last_read[0]})
                 }
+            }
+        })
+    })
+
+    socket.on('get_config',() => {
+        global.db.get('config', {include_docs:true}, function(error,result){
+            if(!error){
+                socket.emit('config',{config:result})
+            }
+        })
+    })
+
+    socket.on('save_config',data => {
+        global.db.insert(data,function(error,result){
+            if(!error){
+                socket.emit('save_config_response',{status:'ok'})
+            } else {
+                socket.emit('save_config_response',{status:'error',error:error})
             }
         })
     })
