@@ -11,6 +11,7 @@ var s = require('../../semantic/dist/semantic.js');
 import RadioOption from './Utilities.jsx';
 import Button from './Button.jsx';
 import Quickview from './Quickview.jsx';
+import ModalComponent from './ModalComponent.jsx';
 
 import Dashboard from './Dashboard.jsx'
 import Nodes from './Nodes.jsx'
@@ -31,7 +32,7 @@ export default class App extends React.Component{
       console.log("conectado a servidor!");
     });
     this.state = {
-
+      settings_modal:false
     }
   }
 
@@ -48,16 +49,31 @@ export default class App extends React.Component{
 
   }
 
+  saveSettings(){
+    this.closeSettingsModal()
+  }
+
+  openSettingsModal(){
+    this.setState({settings_modal:true})
+  }
+
+  closeSettingsModal(){
+    this.setState({settings_modal:false})
+  }
+
   render() {
       return (
         <div className="detatch">
-          <Header />
+          <Header settingsClickHandler={this.openSettingsModal.bind(this)}/>
 
           <div className="ui main fluid container">
             <div className="ui bottom tab container active">
               { this.props.children }
             </div>
           </div>
+          <ModalComponent show={this.state.settings_modal}
+                          closeAction={this.closeSettingsModal.bind(this)}
+                          approveAction={this.saveSettings.bind(this)}/>
           
         </div>
       );
@@ -100,6 +116,11 @@ export class Header extends React.Component{
     socket.off('nodes_info');
   }
 
+  settigsClick(){
+    console.log('settings clicked')
+    this.props.settingsClickHandler();
+  }
+
   render(){
     const logo = require('../../images/chip.svg');
 
@@ -112,7 +133,7 @@ export class Header extends React.Component{
           </div>
           <div className="left menu">
             <div className="ui dropdown icon item" id="nav">
-              <i className="wrench icon"></i>
+              <i className="sidebar icon"></i>
               <div className="menu">
                 <Link to='/dashboard' className="item "><i className="home icon"></i> Dashboard</Link>
                 {this.state.nodes.map((e,i) => {
@@ -122,6 +143,9 @@ export class Header extends React.Component{
                 })}
               </div>
             </div>
+            <a className="ui icon item" id="config" onClick={this.settigsClick.bind(this)}>
+                <i className="setting icon"></i>
+              </a>
           </div>
           <div className="item">
             <Quickview />
