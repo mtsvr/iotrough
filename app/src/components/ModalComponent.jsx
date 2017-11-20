@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 
 import $ from 'jquery';
 
-export default class ModalComponent extends React.Component {
+export default class SettingsModalComponent extends React.Component {
     constructor(props) {
 		super(props);
 		this.state = {
@@ -24,6 +24,10 @@ export default class ModalComponent extends React.Component {
         $('#SettingsModal').modal({
             closable: false
         });
+        socket.emit('get_config')
+        socket.on('config_response', response => {
+            console.log('config',response)
+        })
     }
 
     componentWillUnmount(){
@@ -62,7 +66,7 @@ export default class ModalComponent extends React.Component {
     render(){
 
         return(
-            <div className="ui mini modal" id={'SettingsModal'}>
+            <div className="ui modal" id={'SettingsModal'}>
                 <div className="header">
                     Configuración
                 </div>

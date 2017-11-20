@@ -247,7 +247,7 @@ io.on('connection', function(socket){
     socket.on('get_config',() => {
         global.db.get('config', {include_docs:true}, function(error,result){
             if(!error){
-                socket.emit('config',{config:result})
+                socket.emit('config_response',{config:result})
             }
         })
     })
