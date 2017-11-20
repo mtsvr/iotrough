@@ -36,7 +36,7 @@ function db_check(callback){
                             },
                             get_node:{
                                 map: function(doc){emit(doc.node.node_id,{rev:doc._rev})}
-                            }
+                            }                  
                         }
 
                         let doc = {
@@ -262,9 +262,10 @@ io.on('connection', function(socket){
         })
     })
 
-
-    
-
 });
+
+
+
+	
 
 console.info("Servidor listo, en puerto",PORT)
