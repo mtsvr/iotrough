@@ -32,7 +32,7 @@ function db_check(callback){
 
                         let view_doc = {
                             all_docs:{
-                                map: function(doc){if(doc._id!='info' || doc._id!='config'){emit(doc._id,{rev:doc._rev})}}
+                                map: function(doc){if(doc._id!='info' && doc._id!='config'){emit(doc._id,{rev:doc._rev})}}
                             },
                             get_node:{
                                 map: function(doc){emit(doc.node.node_id,{rev:doc._rev})}
@@ -247,7 +247,7 @@ io.on('connection', function(socket){
     socket.on('get_config',() => {
         global.db.get('config', {include_docs:true}, function(error,result){
             if(!error){
-                socket.emit('config',{config:result})
+                socket.emit('config_response',{config:result})
             }
         })
     })

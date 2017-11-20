@@ -11,7 +11,7 @@ var s = require('../../semantic/dist/semantic.js');
 import RadioOption from './Utilities.jsx';
 import Button from './Button.jsx';
 import Quickview from './Quickview.jsx';
-import ModalComponent from './ModalComponent.jsx';
+import SettingsModalComponent from './ModalComponent.jsx';
 
 import Dashboard from './Dashboard.jsx'
 import Nodes from './Nodes.jsx'
@@ -71,7 +71,7 @@ export default class App extends React.Component{
               { this.props.children }
             </div>
           </div>
-          <ModalComponent show={this.state.settings_modal}
+          <SettingsModalComponent show={this.state.settings_modal}
                           closeAction={this.closeSettingsModal.bind(this)}
                           approveAction={this.saveSettings.bind(this)}/>
           
