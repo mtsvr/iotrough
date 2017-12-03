@@ -173,6 +173,18 @@ io.on('connection', function(socket){
         })
     })
 
+    socket.on('get_all_nodes_lvl', data => {
+        global.db.view('nodes','all_docs',{key:data.node_id,include_docs:true},function(error,result){
+        if(!error){
+            let result_docs = getLastNDays(result.rows,days).sort(sortDocByTimestamp);
+            socket.emit('all_nodes_lvl', {node_id:data.node_id,node_data:data.lvl,data:result_docs})
+         } else{
+                socket.emit('all_reads',{status:'error',error:error,data:[]})
+            }
+        })
+    })
+
+
     socket.on('get_nodes_info',() => {
         global.db.get('info',{include_docs:true},function(error,result){
             if(!error){
@@ -261,6 +273,8 @@ io.on('connection', function(socket){
             }
         })
     })
+
+
 
 });
 
