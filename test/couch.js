@@ -197,4 +197,8 @@ function data_insert(data){
     }
 }
 
+<<<<<<< HEAD
 data_insert("0x01|sph:7|sec:120|tem:11|lvl:2")
+=======
+data_insert("0x03|sph:5|sec:3|tem:10|lvl:3")
+>>>>>>> 5453b69028e76a3b8dde9dfd446f19a953e317ac

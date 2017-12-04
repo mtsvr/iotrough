@@ -47,6 +47,7 @@ export default class Dashboard extends React.Component {
             socket.emit('get_nodes_info');
             socket.emit('get_all_reads',this.state.period);
             this.getLastReads();
+            this.getAllReads();
         })
     }
 
@@ -63,6 +64,15 @@ export default class Dashboard extends React.Component {
                 setTimeout(function(){
                     socket.emit('get_node_last_read',{node_id:n.node_id});
                 },100)
+            }
+        }
+    }
+    getAllReads(){
+        if(this.state.nodes.length > 0){
+            for(let n of this.state.nodes){
+                setTimeout(function(){
+                    socket.emit('get_all_reads',{node_id:n.node_id,days:this.state.period});
+                }, 100)
             }
         }
     }
