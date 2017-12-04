@@ -197,4 +197,4 @@ function data_insert(data){
     }
 }
 
-data_insert("0x02|sph:7|sec:2|tem:12|lvl:2")
+data_insert("0x01|sph:7|sec:120|tem:11|lvl:2")
