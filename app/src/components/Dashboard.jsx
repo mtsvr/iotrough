@@ -47,6 +47,11 @@ export default class Dashboard extends React.Component {
             //console.log(data.data);
         });
 
+        socket.emit('get_all_reads_lvl',this.state.period);
+        socket.on('all_reads_lvl',data => {
+            console.log(data.data)
+        })
+
         socket.emit('get_config');
         socket.on('config_response', response => {
             console.log('config',response.config)
@@ -57,6 +62,7 @@ export default class Dashboard extends React.Component {
         socket.on('db_changes',data => {
             socket.emit('get_nodes_info');
             socket.emit('get_all_reads',this.state.period);
+            socket.emit('get_all_reads_lvl',this.state.period);
             socket.emit('get_config');
             this.getLastReads();
             this.getAllReads();
@@ -67,6 +73,7 @@ export default class Dashboard extends React.Component {
         socket.off('db_changes');
         socket.off('nodes_info');
         socket.off('all_reads');
+        socket.off('all_reads_lvl');
         socket.off('node_last_read');
         socket.off('config_response');
     }

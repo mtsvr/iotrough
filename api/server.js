@@ -177,13 +177,36 @@ io.on('connection', function(socket){
         })
     })
 
-    socket.on('get_all_nodes_lvl', data => {
-        global.db.view('nodes','all_docs',{key:data.node_id,include_docs:true},function(error,result){
+    socket.on('get_all_reads_lvl', (days) => {
+        global.db.view('nodes','all_docs',{include_docs:true},function(error,result){
         if(!error){
             let result_docs = getLastNDays(result.rows,days).sort(sortDocByTimestamp);
-            socket.emit('all_nodes_lvl', {node_id:data.node_id,node_data:data.lvl,data:result_docs})
+            let nodes = []
+            let times = []
+            for(let doc of result_docs){
+                let doc_node_idx = nodes.findIndex(n => n.node_id==doc.doc.node.node_id);
+                times.push(doc.doc.time);
+                if(doc_node_idx==-1){
+                    nodes.push({
+                        node_id:doc.doc.node.node_id,
+                        lvl_data:[
+                            {
+                                time:doc.doc.time,
+                                value:doc.doc.data.lvl
+                            }
+                        ]
+                    })
+                } else {
+                    nodes[doc_node_idx].lvl_data.push({
+                        time:doc.doc.time,
+                        value:doc.doc.data.lvl
+                    })
+                }
+            }
+
+            socket.emit('all_reads_lvl', {status:'ok',data:{nodes:nodes,times:times}})
          } else{
-            socket.emit('all_nodes_lvl',{status:'error',error:error,data:[]})
+            socket.emit('all_reads_lvl',{status:'error',error:error,data:{}})
             }
         })
     })
