@@ -7,6 +7,7 @@ import $ from 'jquery';
 
 import {Line} from 'react-chartjs-2';
 
+
 export default class Nodes extends React.Component {
     constructor(props){
         super(props)
@@ -61,6 +62,8 @@ export default class Nodes extends React.Component {
                     labels:labels,
                     data:data
                 }
+
+                console.log('chart data',chart_data)
                 this.setState({chart_data:chart_data});
             }
         });
@@ -89,6 +92,20 @@ export default class Nodes extends React.Component {
         socket.off('node_data');
     }
 
+    hexToRgb(hex) {
+        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? {
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16)
+        } : null;
+    }
+
+    lowOpacityColor(hex,opacity=100){
+        let rgb = this.hexToRgb(hex);
+        return 'rgba('+rgb.r+','+rgb.g+','+rgb.b+','+opacity/100+')'
+    }
+
     render(){
         return (
             <div>
@@ -104,28 +121,45 @@ export default class Nodes extends React.Component {
                     <div className="column">
                         <div className="ui fluid card">
                             <div className="content">
-                                <Line data={{labels:this.state.chart_data.labels,datasets:[{label:'Nivel',borderColor:'#2185D0',data:this.state.chart_data.data.lvl}]}} />
+                                <Line   options={{scales: {yAxes: [{ticks: {beginAtZero:true}}]}}} 
+                                        data={{ labels:this.state.chart_data.labels,
+                                                datasets:[{ label:'Nivel',
+                                                            borderColor:'#2185D0',
+                                                            backgroundColor:this.lowOpacityColor('#2185D0',20),
+                                                            data:this.state.chart_data.data.lvl}]}} />
                             </div>
                         </div>
                     </div>
                     <div className="column">
                         <div className="ui fluid card">
                             <div className="content">
-                                <Line data={{labels:this.state.chart_data.labels,datasets:[{label:'Ph',borderColor:'#FBBD08',data:this.state.chart_data.data.sph}]}} />
+                                <Line   data={{labels:this.state.chart_data.labels,
+                                        datasets:[{ label:'Ph',
+                                                    borderColor:'#FBBD08',
+                                                    backgroundColor:this.lowOpacityColor('#FBBD08',20),
+                                                    data:this.state.chart_data.data.sph}]}} />
                             </div>
                         </div>
                     </div>
                     <div className="column">
                         <div className="ui fluid card">
                             <div className="content">
-                                <Line data={{labels:this.state.chart_data.labels,datasets:[{label:'E-Conduct.',borderColor:'#00B5AD',data:this.state.chart_data.data.sec}]}} />
+                                <Line   data={{labels:this.state.chart_data.labels, 
+                                        datasets:[{ label:'E-Conduct.',
+                                                    borderColor:'#00B5AD', 
+                                                    backgroundColor:this.lowOpacityColor('#00B5AD',20),
+                                                    data:this.state.chart_data.data.sec}]}} />
                             </div>
                         </div>
                     </div>
                     <div className="column">
                         <div className="ui fluid card">
                             <div className="content">
-                                <Line data={{labels:this.state.chart_data.labels,datasets:[{label:'Temperatura',borderColor:'#F2711C',data:this.state.chart_data.data.tem}]}} />
+                                <Line   data={{labels:this.state.chart_data.labels, 
+                                        datasets:[{ label:'Temperatura',   
+                                                    borderColor:'#F2711C',
+                                                    backgroundColor:this.lowOpacityColor('#F2711C',20),
+                                                    data:this.state.chart_data.data.tem}]}} />
                             </div>
                         </div>
                     </div>

@@ -4,6 +4,10 @@ import ReactDOM from 'react-dom';
 import axios from "axios";
 import $ from 'jquery';
 
+import {Line} from 'react-chartjs-2';
+
+const colorPool = ['#4d7cfb','#fa6234','#04ba2e','#d3053d','#2430f7','#f9ef55','#f16efa','#3df98e','#87c9fb']
+
 export default class Dashboard extends React.Component {
     constructor(props){
         super(props)
@@ -49,23 +53,70 @@ export default class Dashboard extends React.Component {
 
         socket.emit('get_all_reads_lvl',this.state.period);
         socket.on('all_reads_lvl',data => {
-            console.log(data.data)
+            //console.log(data.data)
+            let chart_data = {
+                labels:[],
+                datasets:[]
+            }
+
+            for(let node_idx in data.data.nodes){
+                chart_data.datasets.push({
+                    label:data.data.nodes[node_idx].node_name,
+                    borderColor:colorPool[node_idx%(colorPool.length+1)],
+                    backgroundColor:this.lowOpacityColor(colorPool[node_idx%(colorPool.length+1)],20),
+                    data:[]
+                })
+            }
+
+            for(let time of data.data.times){
+                chart_data.labels.push((new Date(time)).toLocaleString('es-CL'));
+                for(let node of data.data.nodes){
+                    let read_idx = node.lvl_data.findIndex(r => r.time==time)
+                    let dataset_idx = chart_data.datasets.findIndex(ds => ds.label==node.node_name);
+                    if(read_idx!=-1){
+                        chart_data.datasets[dataset_idx].data.push(node.lvl_data[read_idx].value);
+                    } else {
+                        if(chart_data.datasets[dataset_idx].data.length>0){
+                            chart_data.datasets[dataset_idx].data.push(
+                                chart_data.datasets[dataset_idx].data[chart_data.datasets[dataset_idx].data.length-1]
+                            )
+                        } else {
+                            chart_data.datasets[dataset_idx].data.push(null)
+                        }
+                    }
+                }
+            }
+
+            //console.log('chart_data',chart_data)
+            this.setState({chart_data:chart_data})
         })
 
         socket.emit('get_config');
         socket.on('config_response', response => {
             console.log('config',response.config)
             this.setState({config:response.config})
-            this.setState({period:response.config.period})
+            this.setState({period:response.config.period},function(error,res){
+                socket.emit('get_all_reads',this.state.period);
+                socket.emit('get_all_reads_lvl',this.state.period);
+                
+                this.getLastReads();
+                this.getAllReads();
+            })
         })
 
         socket.on('db_changes',data => {
-            socket.emit('get_nodes_info');
-            socket.emit('get_all_reads',this.state.period);
-            socket.emit('get_all_reads_lvl',this.state.period);
-            socket.emit('get_config');
-            this.getLastReads();
-            this.getAllReads();
+            console.log('changes',data);
+            if(data.change.id=='config'){
+                socket.emit('get_config');
+            } else if(data.change.id=='info'){
+                socket.emit('get_nodes_info');
+            } else {
+                socket.emit('get_all_reads',this.state.period);
+                socket.emit('get_all_reads_lvl',this.state.period);
+                
+                this.getLastReads();
+                this.getAllReads();
+            }
         })
     }
 
@@ -122,7 +173,7 @@ export default class Dashboard extends React.Component {
 
             } else if(sensor=='sph'){
                 let alert_value_min = sensor_values[sensor].alert_min;
-                let alert_value_max = sensor_values[sensor].alert_min;
+                let alert_value_max = sensor_values[sensor].alert_max;
                 let warning_value_min = sensor_values[sensor].warning_min;
                 let warning_value_max = sensor_values[sensor].warning_max;
 
@@ -135,7 +186,6 @@ export default class Dashboard extends React.Component {
             } else if(sensor=='sec'){
                 alert_value = sensor_values[sensor].alert;
                 warning_value = sensor_values[sensor].warning;
-
                 if(last_read_value >= alert_value){
                     status = 'alert'
                 } else if (last_read_value >= warning_value){
@@ -144,7 +194,7 @@ export default class Dashboard extends React.Component {
 
             } else if(sensor=='tem'){
                 let alert_value_min = sensor_values[sensor].alert_min;
-                let alert_value_max = sensor_values[sensor].alert_min;
+                let alert_value_max = sensor_values[sensor].alert_max;
                 let warning_value_min = sensor_values[sensor].warning_min;
                 let warning_value_max = sensor_values[sensor].warning_max;
 
@@ -169,6 +219,24 @@ export default class Dashboard extends React.Component {
         return (
             <i className="green checkmark icon"></i>
         )
+    }
+
+    randomHexColor(){
+        return '#' + ("000000" + Math.random().toString(16).slice(2, 8).toUpperCase()).slice(-6);
+    }
+
+    hexToRgb(hex) {
+        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? {
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16)
+        } : null;
+    }
+
+    lowOpacityColor(hex,opacity=100){
+        let rgb = this.hexToRgb(hex);
+        return 'rgba('+rgb.r+','+rgb.g+','+rgb.b+','+opacity/100+')'
     }
 
     render(){
@@ -303,7 +371,11 @@ export default class Dashboard extends React.Component {
                     <div className="eleven wide column">
                         <div className="ui fluid card">
                             <div className="content">
-                                contenido
+                                <div className="header">
+                                    Nivel
+                                </div>
+                                {this.state.chart_data?
+                                <Line data={this.state.chart_data} options={{scales: {yAxes: [{ticks: {beginAtZero:true}}]}}}/>:null}
                             </div>
                         </div>
                     </div>

@@ -201,4 +201,4 @@ function data_insert(data){
     }
 }
 
-data_insert("0x01|sph:6|sec:40|tem:13|lvl:2")
+data_insert("0x03|sph:7|sec:80|tem:20|lvl:3")

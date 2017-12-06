@@ -32,7 +32,7 @@ export default class Quickview extends React.Component {
         })
 
         socket.on('db_changes',data =>{
-
+            //console.log('quickview changes',data)
             socket.emit('get_last_read')
             socket.emit('get_read_count');
         })
