@@ -1,6 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import Slider, { Range } from 'rc-slider';
+// We can just import Slider or Range to reduce bundle size
+// import Slider from 'rc-slider/lib/Slider';
+// import Range from 'rc-slider/lib/Range';
+import 'rc-slider/assets/index.css';
+
 import $ from 'jquery';
 
 export default class SettingsModalComponent extends React.Component {
@@ -12,8 +18,10 @@ export default class SettingsModalComponent extends React.Component {
                 sensors : {
                     sph: {
                         ideal : 7,
-                        warning: 0.5,
-                        alert: 1
+                        warning_min: 6.5,
+                        warning_max: 7.5,
+                        alert_min: 6,
+                        alert_max: 8
                     },
                     sec: {
                         ideal: 0,
@@ -22,13 +30,15 @@ export default class SettingsModalComponent extends React.Component {
                     },
                     tem: {
                         ideal: 22,
-                        warning: 4,
-                        alert: 5
+                        warning_min: 18,
+                        warning_max:26,
+                        alert_min:17,
+                        alert_max: 27
                     },
                     lvl: {
                         ideal: 3,
                         warning: 2,
-                        alert: 3
+                        alert: 0
                     }
                 } 
             }
@@ -81,7 +91,7 @@ export default class SettingsModalComponent extends React.Component {
 
     approve(){
         if(this.props.approveAction){
-            this.props.approveAction()
+            this.props.approveAction(this.state.config)
         } else {
             console.log('missing approve action')
         }
@@ -89,10 +99,164 @@ export default class SettingsModalComponent extends React.Component {
         this.close();
     }
 
+    handlePeriodChange(value) {
+        console.log('period',value)
+        let config = this.state.config;
+        this.state.config.period = value;
+        this.setState({
+          config:config
+        })
+    };
+
+    handleLevelChange(value){
+        console.log('level change',value);
+        let config = this.state.config;
+        config.sensors.lvl.ideal = 3;
+        config.sensors.lvl.warning = value[1];
+        config.sensors.lvl.alert = value[0];
+        this.setState({
+            config:config
+        })
+    }
+
+    handlePhChange(value){
+        console.log('pH change',value);
+        let config = this.state.config;
+        config.sensors.sph.alert_min = value[0]
+        config.sensors.sph.warning_min = value[1]
+        config.sensors.sph.ideal = value[2]
+        config.sensors.sph.warning_max = value[3]
+        config.sensors.sph.alert_max = value[4]
+        this.setState({
+            config:config
+        })
+    }
+
+    handleEcChange(value){
+        console.log('ec change',value);
+        let config = this.state.config;
+        config.sensors.sec.ideal = value[0];
+        config.sensors.sec.warning = value[1];
+        config.sensors.sec.alert = value[2];
+        this.setState({
+            config:config
+        })
+    }
+
+    handleTempChange(value){
+        console.log('temp change',value);
+        let config = this.state.config;
+        config.sensors.tem.alert_min = value[0]
+        config.sensors.tem.warning_min = value[1]
+        config.sensors.tem.ideal = value[2]
+        config.sensors.tem.warning_max = value[3]
+        config.sensors.tem.alert_max = value[4]
+        this.setState({
+            config:config
+        })
+    }
+
     render(){
 
-        let form = (<div>
-                        hola
+        let form = (<div className="ui grid">
+                        <div className="four wide column">
+                            <div className="ui grey label">
+                                Lectura en Dias
+                                <a className="detail">{this.state.config.period}</a>
+                            </div>
+                        </div>
+                        <div className="twelve wide column">
+                            <Slider dots 
+                                min={1}    
+                                max={7} 
+                                step={1} 
+                                defaultValue={this.state.config.period} 
+                                onChange={this.handlePeriodChange.bind(this)}/>
+                        </div>
+
+                        <div className="four wide column">
+                            <div className="ui blue label">
+                                Nivel
+                                <a className="detail">
+                                    <i className="checkmark icon"></i>
+                                    {this.state.config.sensors.lvl.ideal}
+                                    <i className="warning sign icon"></i>
+                                    {this.state.config.sensors.lvl.warning}
+                                    <i className="remove icon"></i>
+                                    {this.state.config.sensors.lvl.alert}
+                                </a>
+                            </div>
+                        </div>
+                        <div className="twelve wide column">
+                            <Range  min={0} max={3} step={1}
+                                    allowCross={false}
+                                    defaultValue={[this.state.config.sensors.lvl.alert,this.state.config.sensors.lvl.warning,this.state.config.sensors.lvl.ideal]} 
+                                    onChange={this.handleLevelChange.bind(this)}/>
+                        </div>
+
+                        <div className="four wide column">
+                            <div className="ui yellow label">
+                                pH
+                                <a className="detail">
+                                <i className="checkmark icon"></i>
+                                {this.state.config.sensors.sph.ideal}
+                                <i className="warning sign icon"></i>
+                                {this.state.config.sensors.sph.warning_min}-{this.state.config.sensors.sph.warning_max} 
+                                <i className="remove icon"></i>
+                                {this.state.config.sensors.sph.alert_min}-{this.state.config.sensors.sph.alert_max} 
+                                </a>
+                            </div>
+                        </div>
+                        <div className="twelve wide column">
+                            <Range  min={0} max={14} step={0.5}
+                                    allowCross={false}
+                                    defaultValue={[this.state.config.sensors.sph.alert_min,this.state.config.sensors.sph.warning_min,this.state.config.sensors.sph.ideal,this.state.config.sensors.sph.warning_max,this.state.config.sensors.sph.alert_max]} 
+                                    onChange={this.handlePhChange.bind(this)}/>
+                        </div>
+
+                        <div className="four wide column">
+                            <div className="ui teal label">
+                                Electroconductividad
+                                <a className="detail">
+                                    <i className="checkmark icon"></i>
+                                    {this.state.config.sensors.sec.ideal}
+                                    <i className="warning sign icon"></i>
+                                    {this.state.config.sensors.sec.warning}
+                                    <i className="remove icon"></i>
+                                    {this.state.config.sensors.sec.alert}
+                                </a>
+                            </div>
+                        </div>
+                        <div className="twelve wide column">
+                            <Range  min={0} max={15000} step={100}
+                                    allowCross={false}
+                                    defaultValue={[this.state.config.sensors.sec.ideal,this.state.config.sensors.sec.warning,this.state.config.sensors.sec.alert]} 
+                                    onChange={this.handleEcChange.bind(this)}/>
+                        </div>
+
+                        <div className="four wide column">
+                            <div className="ui orange label">
+                                Temperatura
+                                <a className="detail">
+                                    <i className="checkmark icon"></i>
+                                    {this.state.config.sensors.tem.ideal}
+                                    <i className="warning sign icon"></i>
+                                    {this.state.config.sensors.tem.warning_min}-{this.state.config.sensors.tem.warning_max} 
+                                    <i className="remove icon"></i>
+                                    {this.state.config.sensors.tem.alert_min}-{this.state.config.sensors.tem.alert_max} 
+                                </a>
+                            </div>
+                        </div>
+                        <div className="twelve wide column">
+                            <Range  min={-10} max={50} step={1}
+                                    allowCross={false}
+                                    defaultValue={[this.state.config.sensors.tem.alert_min,this.state.config.sensors.tem.warning_min,this.state.config.sensors.tem.ideal,this.state.config.sensors.tem.warning_max,this.state.config.sensors.tem.alert_max]} 
+                                    onChange={this.handleTempChange.bind(this)}/>
+                        </div>
+
+
+                        
+                        
                     </div>)
 
         return(

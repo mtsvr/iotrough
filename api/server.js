@@ -50,8 +50,10 @@ function db_check(callback){
                             sensors : {
                                 sph: {
                                     ideal : 7,
-                                    warning: 0.5,
-                                    alert: 1
+                                    warning_min: 6.5,
+                                    warning_max: 7.5,
+                                    alert_min: 6,
+                                    alert_max: 8
                                 },
                                 sec: {
                                     ideal: 0,
@@ -60,15 +62,17 @@ function db_check(callback){
                                 },
                                 tem: {
                                     ideal: 22,
-                                    warning: 4,
-                                    alert: 5
+                                    warning_min: 18,
+                                    warning_max:26,
+                                    alert_min:17,
+                                    alert_max: 27
                                 },
                                 lvl: {
                                     ideal: 3,
                                     warning: 2,
-                                    alert: 3
+                                    alert: 0
                                 }
-                            } 
+                            }  
                         }
                         
                         global.db.insert({views:view_doc,language:"javascript"},'_design/nodes',function(error,body){
@@ -179,7 +183,7 @@ io.on('connection', function(socket){
             let result_docs = getLastNDays(result.rows,days).sort(sortDocByTimestamp);
             socket.emit('all_nodes_lvl', {node_id:data.node_id,node_data:data.lvl,data:result_docs})
          } else{
-                socket.emit('all_reads',{status:'error',error:error,data:[]})
+            socket.emit('all_nodes_lvl',{status:'error',error:error,data:[]})
             }
         })
     })
@@ -259,7 +263,10 @@ io.on('connection', function(socket){
     socket.on('get_config',() => {
         global.db.get('config', {include_docs:true}, function(error,result){
             if(!error){
-                socket.emit('config_response',{config:result})
+                socket.emit('config_response',{status:'ok',config:result})
+            } else {
+                console.log(error)
+                socket.emit('config_response',{status:'error',error:error})
             }
         })
     })

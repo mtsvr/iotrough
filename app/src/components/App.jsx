@@ -47,10 +47,30 @@ export default class App extends React.Component{
 
     })
 
+    socket.emit('get_config')
+    socket.on('config_response', response => {
+        console.log('config',response.config)
+        this.setState({config:response.config})
+    })
+
+    socket.on('save_config_response', response => {
+      if(response.status=='ok'){
+        socket.emit('get_config')
+        this.closeSettingsModal();
+      }
+    })
+
   }
 
-  saveSettings(){
-    this.closeSettingsModal()
+  saveSettings(config){
+    let new_config = config;
+    new_config['_id']='config';
+    new_config['_rev']=this.state.config._rev;
+    if(new_config._id && new_config._rev){
+      socket.emit('save_config',new_config);
+    }
+    
+
   }
 
   openSettingsModal(){

@@ -10,7 +10,11 @@ export default class Dashboard extends React.Component {
         this.state = {
             nodes:[],
             last_reads:[],
-            period:7
+            period:7,
+            config:{
+                sensors:{
+                }
+            }
         }
     }
 
@@ -43,9 +47,17 @@ export default class Dashboard extends React.Component {
             //console.log(data.data);
         });
 
+        socket.emit('get_config');
+        socket.on('config_response', response => {
+            console.log('config',response.config)
+            this.setState({config:response.config})
+            this.setState({period:response.config.period})
+        })
+
         socket.on('db_changes',data => {
             socket.emit('get_nodes_info');
             socket.emit('get_all_reads',this.state.period);
+            socket.emit('get_config');
             this.getLastReads();
             this.getAllReads();
         })
@@ -56,6 +68,7 @@ export default class Dashboard extends React.Component {
         socket.off('nodes_info');
         socket.off('all_reads');
         socket.off('node_last_read');
+        socket.off('config_response');
     }
 
     getLastReads(){
@@ -79,12 +92,7 @@ export default class Dashboard extends React.Component {
 
     getReadStatus(node_id,sensor){
         
-        let sensor_values = {
-            lvl:{warning:1,alert:0},
-            sph:{warning:2,alert:3},
-            sec:{warning:10,alert:15},
-            tem:{warning:10,alert:15}
-        }
+        let sensor_values = this.state.config.sensors;
 
         let alert_value = 0;
         let warning_value = alert_value+1;
@@ -106,12 +114,14 @@ export default class Dashboard extends React.Component {
                 }
 
             } else if(sensor=='sph'){
-                alert_value = sensor_values[sensor].alert;
-                warning_value = sensor_values[sensor].warning;
+                let alert_value_min = sensor_values[sensor].alert_min;
+                let alert_value_max = sensor_values[sensor].alert_min;
+                let warning_value_min = sensor_values[sensor].warning_min;
+                let warning_value_max = sensor_values[sensor].warning_max;
 
-                if(last_read_value <= 7-alert_value || last_read_value >= 7+alert_value){
+                if(last_read_value <= alert_value_min || last_read_value >= alert_value_max){
                     status = 'alert'
-                } else if (last_read_value <= 7-warning_value || last_read_value >= 7+warning_value){
+                } else if (last_read_value <= warning_value_min || last_read_value >= warning_value_max){
                     status = 'warning';
                 }
 
@@ -126,12 +136,14 @@ export default class Dashboard extends React.Component {
                 }
 
             } else if(sensor=='tem'){
-                alert_value = sensor_values[sensor].alert;
-                warning_value = sensor_values[sensor].warning;
+                let alert_value_min = sensor_values[sensor].alert_min;
+                let alert_value_max = sensor_values[sensor].alert_min;
+                let warning_value_min = sensor_values[sensor].warning_min;
+                let warning_value_max = sensor_values[sensor].warning_max;
 
-                if(last_read_value <= 15-alert_value || last_read_value >= 15+alert_value){
+                if(last_read_value <= alert_value_min || last_read_value >= alert_value_max){
                     status = 'alert'
-                } else if (last_read_value <= 15-warning_value || last_read_value >= 15+warning_value){
+                } else if (last_read_value <= warning_value_min || last_read_value >= warning_value_max){
                     status = 'warning';
                 }
             }

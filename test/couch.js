@@ -47,8 +47,10 @@ function db_check(callback){
                             sensors : {
                                 sph: {
                                     ideal : 7,
-                                    warning: 0.5,
-                                    alert: 1
+                                    warning_min: 6.5,
+                                    warning_max: 7.5,
+                                    alert_min: 6,
+                                    alert_max: 8
                                 },
                                 sec: {
                                     ideal: 0,
@@ -57,15 +59,17 @@ function db_check(callback){
                                 },
                                 tem: {
                                     ideal: 22,
-                                    warning: 4,
-                                    alert: 5
+                                    warning_min: 18,
+                                    warning_max:26,
+                                    alert_min:17,
+                                    alert_max: 27
                                 },
                                 lvl: {
                                     ideal: 3,
                                     warning: 2,
-                                    alert: 3
+                                    alert: 0
                                 }
-                            } 
+                            }  
                         }
                         
                         global.db.insert({views:view_doc,language:"javascript"},'_design/nodes',function(error,body){
@@ -197,8 +201,4 @@ function data_insert(data){
     }
 }
 
-<<<<<<< HEAD
 data_insert("0x01|sph:7|sec:120|tem:11|lvl:2")
-=======
-data_insert("0x03|sph:5|sec:3|tem:10|lvl:3")
->>>>>>> 5453b69028e76a3b8dde9dfd446f19a953e317ac
