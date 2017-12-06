@@ -152,80 +152,125 @@ export default class SettingsModalComponent extends React.Component {
                 </div>
 
                 <div className="four wide column">
-                    <div className="ui blue label">
-                        Nivel
-                        <a className="detail">
-                            <i className="checkmark icon"></i>
-                            {this.state.config.sensors.lvl.ideal}
-                            <i className="warning sign icon"></i>
-                            {this.state.config.sensors.lvl.warning}
-                            <i className="remove icon"></i>
-                            {this.state.config.sensors.lvl.alert}
-                        </a>
-                    </div>
+                    
+                    <table className="ui inverted blue collapsing table">
+                        <thead>
+                            <tr>
+                                <th colSpan={2} className="center aligned">Nivel</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><i className="checkmark icon"></i></td>
+                                <td>{this.state.config.sensors.lvl.ideal}</td>
+                            </tr>
+                            <tr>
+                                <td><i className="warning sign icon"></i></td>
+                                <td>{this.state.config.sensors.lvl.warning}</td>
+                            </tr>
+                            <tr>
+                                <td><i className="remove icon"></i></td>
+                                <td>{this.state.config.sensors.lvl.alert}</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <div className="twelve wide column">
+                <div className="twelve wide middle aligned column">
                     <Range  min={0} max={3} step={1}
+                            handleStyle={[{ backgroundColor: 'red' }, { backgroundColor: 'orange' }]}
                             allowCross={false}
                             defaultValue={[this.state.config.sensors.lvl.alert,this.state.config.sensors.lvl.warning,this.state.config.sensors.lvl.ideal]} 
                             onChange={this.handleLevelChange.bind(this)}/>
                 </div>
 
                 <div className="four wide column">
-                    <div className="ui yellow label">
-                        pH
-                        <a className="detail">
-                        <i className="checkmark icon"></i>
-                        {this.state.config.sensors.sph.ideal}
-                        <i className="warning sign icon"></i>
-                        {this.state.config.sensors.sph.warning_min}-{this.state.config.sensors.sph.warning_max} 
-                        <i className="remove icon"></i>
-                        {this.state.config.sensors.sph.alert_min}-{this.state.config.sensors.sph.alert_max} 
-                        </a>
-                    </div>
+                    <table className="ui inverted yellow collapsing table">
+                        <thead>
+                            <tr>
+                                <th colSpan={2} className="center aligned">pH</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><i className="checkmark icon"></i></td>
+                                <td>{this.state.config.sensors.sph.ideal}</td>
+                            </tr>
+                            <tr>
+                                <td><i className="warning sign icon"></i></td>
+                                <td>{this.state.config.sensors.sph.warning_min} - {this.state.config.sensors.sph.warning_max} </td>
+                            </tr>
+                            <tr>
+                                <td><i className="remove icon"></i></td>
+                                <td>{this.state.config.sensors.sph.alert_min} - {this.state.config.sensors.sph.alert_max} </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <div className="twelve wide column">
+                <div className="twelve wide middle aligned column">
                     <Range  min={0} max={14} step={0.5}
+                            handleStyle={[{ backgroundColor: 'red' }, { backgroundColor: 'orange' }, { backgroundColor: 'white' }, { backgroundColor: 'orange' }, { backgroundColor: 'red' }]}
                             allowCross={false}
                             defaultValue={[this.state.config.sensors.sph.alert_min,this.state.config.sensors.sph.warning_min,this.state.config.sensors.sph.ideal,this.state.config.sensors.sph.warning_max,this.state.config.sensors.sph.alert_max]} 
                             onChange={this.handlePhChange.bind(this)}/>
                 </div>
 
                 <div className="four wide column">
-                    <div className="ui teal label">
-                        Electroconductividad
-                        <a className="detail">
-                            <i className="checkmark icon"></i>
-                            {this.state.config.sensors.sec.ideal}
-                            <i className="warning sign icon"></i>
-                            {this.state.config.sensors.sec.warning}
-                            <i className="remove icon"></i>
-                            {this.state.config.sensors.sec.alert}
-                        </a>
-                    </div>
+                    <table className="ui inverted teal collapsing table">
+                        <thead>
+                            <tr>
+                                <th colSpan={2} className="center aligned">Electroconductividad</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><i className="checkmark icon"></i></td>
+                                <td>{this.state.config.sensors.sec.ideal}</td>
+                            </tr>
+                            <tr>
+                                <td><i className="warning sign icon"></i></td>
+                                <td>{this.state.config.sensors.sec.warning}</td>
+                            </tr>
+                            <tr>
+                                <td><i className="remove icon"></i></td>
+                                <td>{this.state.config.sensors.sec.alert}</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <div className="twelve wide column">
+                <div className="twelve wide middle aligned column">
                     <Range  min={0} max={15000} step={100}
                             allowCross={false}
+                            handleStyle={[{ backgroundColor: 'white' }, { backgroundColor: 'orange' }, { backgroundColor: 'red' }]}
                             defaultValue={[this.state.config.sensors.sec.ideal,this.state.config.sensors.sec.warning,this.state.config.sensors.sec.alert]} 
                             onChange={this.handleEcChange.bind(this)}/>
                 </div>
 
                 <div className="four wide column">
-                    <div className="ui orange label">
-                        Temperatura
-                        <a className="detail">
-                            <i className="checkmark icon"></i>
-                            {this.state.config.sensors.tem.ideal}
-                            <i className="warning sign icon"></i>
-                            {this.state.config.sensors.tem.warning_min}-{this.state.config.sensors.tem.warning_max} 
-                            <i className="remove icon"></i>
-                            {this.state.config.sensors.tem.alert_min}-{this.state.config.sensors.tem.alert_max} 
-                        </a>
-                    </div>
+                    <table className="ui inverted orange collapsing table">
+                        <thead>
+                            <tr>
+                                <th colSpan={2} className="center aligned">Temperatura</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><i className="checkmark icon"></i></td>
+                                <td>{this.state.config.sensors.tem.ideal}</td>
+                            </tr>
+                            <tr>
+                                <td><i className="warning sign icon"></i></td>
+                                <td>{this.state.config.sensors.tem.warning_min} - {this.state.config.sensors.tem.warning_max} </td>
+                            </tr>
+                            <tr>
+                                <td><i className="remove icon"></i></td>
+                                <td>{this.state.config.sensors.tem.alert_min} - {this.state.config.sensors.tem.alert_max} </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <div className="twelve wide column">
+                <div className="twelve wide middle aligned column">
                     <Range  min={-10} max={50} step={1}
+                            handleStyle={[{ backgroundColor: 'red' }, { backgroundColor: 'orange' }, { backgroundColor: 'white' }, { backgroundColor: 'orange' }, { backgroundColor: 'red' }]}
                             allowCross={false}
                             defaultValue={[this.state.config.sensors.tem.alert_min,this.state.config.sensors.tem.warning_min,this.state.config.sensors.tem.ideal,this.state.config.sensors.tem.warning_max,this.state.config.sensors.tem.alert_max]} 
                             onChange={this.handleTempChange.bind(this)}/>
